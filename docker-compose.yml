@@ -6,3 +6,21 @@ services:
     container_name: api.login.test
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db/postgres"
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    image: postgres:14.1-alpine
+    ports:
+      - "5432:5432"
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./util-containers/postgresql/data:/var/lib/postgresql/data
+      - ./util-containers/postgresql/init:/docker-entrypoint-initdb.d
+    restart: always

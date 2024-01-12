@@ -13,4 +13,4 @@ class BaseAppSettings(BaseSettings):
     app_env: AppEnvTypes = AppEnvTypes.prod
 
     class Config:
-        env_file = ".env"
+        env_file = ".env."

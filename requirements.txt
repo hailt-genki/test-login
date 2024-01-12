@@ -1,6 +1,8 @@
 absl-py==2.0.0
 annotated-types==0.6.0
 anyio==3.7.1
+async-timeout==4.0.3
+asyncpg==0.29.0
 attrs==23.1.0
 build==1.0.3
 CacheControl==0.13.1
@@ -31,6 +33,7 @@ kiwisolver==1.4.5
 loguru==0.7.2
 matplotlib==3.8.2
 more-itertools==10.1.0
+msgpack==1.0.7
 numpy==1.26.2
 opencv-contrib-python==4.8.1.78
 packaging==23.2
