@@ -1,39 +1,17 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK
-
-from app.api.dependencies.authentication import get_current_user_authorizer
 from app.api.dependencies.databse import get_repository
 from app.core.config import get_app_settings
 from app.core.settings.app import AppSettings
 from app.db.repositories.users import UsersRepository
 from app.models.domain.users import User
-from app.models.schemas.users import UserInResponse, UserWithToken, UserInLogin, UserInCreate
+from app.models.schemas.users import UserInResponse, UserWithToken, UserInLogin, UserInCreate, UserInForgot
 from app.resources import strings
 from app.services import jwt
 from app.db.errors import EntityDoesNotExist
 from app.services.authentication import check_email_is_taken, check_username_is_taken
 
 router = APIRouter()
-
-@router.get("", response_model=UserInResponse, name="users:get-current-user")
-async def retrieve_current_user(
-    user: User = Depends(get_current_user_authorizer()),
-    settings: AppSettings = Depends(get_app_settings),
-) -> UserInResponse:
-    token = jwt.create_access_token_for_user(
-        user,
-        str(settings.secret_key.get_secret_value()),
-    )
-    return UserInResponse(
-        user=UserWithToken(
-            username=user.username,
-            email=user.email,
-            bio=user.bio,
-            image=user.image,
-            token=token,
-        ),
-    )
-
 
 @router.post("/login", response_model=UserInResponse, name="user:login")
 async def login(
@@ -69,7 +47,7 @@ async def login(
 
 @router.post("/forgot", name="user:forgot")
 async def forgot(
-    user_login: UserInLogin = Body(..., embed=True, alias="user"),
+    user: UserInForgot = Body(..., embed=True, alias="user"),
     users_repo: UsersRepository = Depends(get_repository(UsersRepository)),
 ):
     resp = HTTPException(
@@ -77,7 +55,7 @@ async def forgot(
         detail="checking your email",
     )
     try:
-        user = await users_repo.get_user_by_email(email=user_login.email)
+        user = await users_repo.get_user_by_email(email=user.email)
     except EntityDoesNotExist as existence_error:
         print(existence_error)
     return resp

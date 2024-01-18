@@ -16,7 +16,7 @@ class User(RWModel):
     hashed_password: str | None = None
     id: int
 
-class UserInDB(DateTimeModelMixin, User):
+class UserInDB(DateTimeModelMixin,IDModelMixin,User):
     # salt: str = ""
     # hashed_password: str = ""
 

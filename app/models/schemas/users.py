@@ -26,3 +26,6 @@ class UserInUpdate(BaseModel):
     password: Optional[str] = None
     bio: Optional[str] = None
     image: Optional[HttpUrl] = None
+
+class UserInForgot(RWSchema):
+    email: EmailStr
